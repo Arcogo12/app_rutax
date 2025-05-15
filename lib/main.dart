@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                 Image.asset(
                   'lib/images/logo.png',
                   height: 120,
-                  color: Colors.white, // <- Aplica un color encima
+                  color: Colors.white,
                   colorBlendMode:
                       BlendMode
                           .srcIn, // <- Mezcla el color con la transparencia

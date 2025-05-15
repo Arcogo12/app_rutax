@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Pantalla principal de reportes con selección de fecha,
+/// pestañas (Ventas y Precargas) y resumen de datos.
 class ReportesPage extends StatefulWidget {
   const ReportesPage({super.key});
 
@@ -9,14 +11,18 @@ class ReportesPage extends StatefulWidget {
 }
 
 class _ReportesPageState extends State<ReportesPage> {
+  // Fecha seleccionada en el calendario, por defecto es la actual
   DateTime _selectedDate = DateTime.now();
-  int _selectedTab = 0; // 0 = Ventas, 1 = Precargas
 
-  // Valores de ejemplo para los campos
-  final int total = 120; // Total
-  final int clientesPendientesCoords = 50; // Clientes pendientes coords
-  final int clientesNuevosPendientes = 30; // Clientes nuevos pendientes
+  // Índice de la pestaña seleccionada: 0 = Ventas, 1 = Precargas
+  int _selectedTab = 0;
 
+  // Datos de ejemplo que se mostrarán en los campos
+  final int total = 120;
+  final int clientesPendientesCoords = 50;
+  final int clientesNuevosPendientes = 30;
+
+  /// Muestra un diálogo modal personalizado con un selector de fecha (calendario)
   void _showCustomCalendarModal(BuildContext context) {
     showDialog(
       context: context,
@@ -42,7 +48,7 @@ class _ReportesPageState extends State<ReportesPage> {
                       setState(() {
                         _selectedDate = date;
                       });
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(); // Cierra el modal
                     },
                   ),
                   TextButton(
@@ -58,99 +64,71 @@ class _ReportesPageState extends State<ReportesPage> {
     );
   }
 
-  String get formattedDate {
-    return DateFormat('dd/MM/yyyy').format(_selectedDate);
-  }
+  /// Devuelve la fecha seleccionada en formato dd/MM/yyyy
+  String get formattedDate => DateFormat('dd/MM/yyyy').format(_selectedDate);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Pestañas centradas arriba
-        Positioned(
-          top: 16,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Reportes'),
+        actions: [
+          // Botón de calendario en la AppBar
+          IconButton(
+            icon: const Icon(Icons.calendar_today),
+            tooltip: 'Seleccionar fecha',
+            onPressed: () => _showCustomCalendarModal(context),
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Pestañas de selección
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildTabItem('Ventas', 0),
                 const SizedBox(width: 24),
                 _buildTabItem('Precargas', 1),
               ],
             ),
-          ),
-        ),
+            const SizedBox(height: 12),
 
-        // Icono de calendario arriba a la derecha
-        Positioned(
-          top: 8,
-          right: 16,
-          child: IconButton(
-            icon: const Icon(Icons.calendar_today, size: 28),
-            tooltip: 'Seleccionar fecha',
-            onPressed: () => _showCustomCalendarModal(context),
-          ),
-        ),
+            // Muestra la fecha seleccionada
+            Text(formattedDate, style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 24),
 
-        // Fecha debajo de las pestañas
-        Positioned(
-          top: 70,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: Text(formattedDate, style: const TextStyle(fontSize: 20)),
-          ),
-        ),
-
-        // Campos debajo de la fecha
-        Positioned(
-          top: 120, // Posiciona los campos debajo de la fecha
-          left: 16,
-          right: 16,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildField('Total', total.toString()),
-              _buildField(
-                'Clientes pendientes coords',
-                clientesPendientesCoords.toString(),
-              ),
-              _buildField(
-                'Clientes nuevos pendientes',
-                clientesNuevosPendientes.toString(),
-              ),
-            ],
-          ),
-        ),
-
-        // Icono de enviar abajo a la izquierda
-        Positioned(
-          bottom: 16,
-          right: 16,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              // Acción al presionar el botón de enviar
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('Reporte enviado')));
-            },
-            label: const Text('Enviar'),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              backgroundColor: Colors.orange, // Puedes cambiar el color
-              foregroundColor: Colors.white, // Color del texto e ícono
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+            // Campos de datos
+            _buildField('Total', total.toString()),
+            _buildField(
+              'Clientes pendientes coords',
+              clientesPendientesCoords.toString(),
             ),
-          ),
+            _buildField(
+              'Clientes nuevos pendientes',
+              clientesNuevosPendientes.toString(),
+            ),
+          ],
         ),
-      ],
+      ),
+
+      // Botón flotante de acción (enviar reporte)
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Reporte enviado')));
+        },
+        icon: const Icon(Icons.send),
+        label: const Text('Enviar'),
+        backgroundColor: Colors.orange,
+      ),
     );
   }
 
+  /// Construye un ítem de pestaña con estilo seleccionado/deseleccionado
   Widget _buildTabItem(String title, int index) {
     final isSelected = _selectedTab == index;
     return GestureDetector(
@@ -181,7 +159,7 @@ class _ReportesPageState extends State<ReportesPage> {
     );
   }
 
-  // Widget para construir cada campo con su título y valor
+  /// Construye un campo con título y valor alineados horizontalmente
   Widget _buildField(String title, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),

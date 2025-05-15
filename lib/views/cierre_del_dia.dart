@@ -9,19 +9,26 @@ class CierrePage extends StatefulWidget {
 }
 
 class _CierrePageState extends State<CierrePage> {
+  // Controlador para el campo de texto de total en efectivo
   final TextEditingController _totalEfectivoController =
       TextEditingController();
+
+  // Variable para guardar el cálculo del sobrante (efectivo - esperado)
   double _sobrante = 0.0;
+
+  // Fecha seleccionada por el usuario
   DateTime _selectedDate = DateTime.now();
 
-  // Función para mostrar el selector de fecha
+  // ---------------- FUNCIONES PRINCIPALES ----------------
+
+  // Muestra un selector de fecha al usuario
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
-      locale: const Locale('es', 'ES'),
+      locale: const Locale('es', 'ES'), // Idioma en español
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
@@ -30,20 +37,20 @@ class _CierrePageState extends State<CierrePage> {
     }
   }
 
-  // Formatea la fecha seleccionada
+  // Devuelve la fecha seleccionada en formato legible
   String get formattedDate {
     return DateFormat('EEEE dd/MM/yyyy', 'es').format(_selectedDate);
   }
 
-  // Calcula el sobrante en base al valor ingresado por el usuario
+  // Calcula el sobrante tomando en cuenta el monto ingresado por el usuario
   void _calcularSobrante() {
     final efectivo = double.tryParse(_totalEfectivoController.text) ?? 0;
     setState(() {
-      _sobrante = efectivo - 1000; // 1000 representa el monto esperado
+      _sobrante = efectivo - 1000; // 1000 es el monto base esperado
     });
   }
 
-  // Muestra un menú de opciones (enviar reporte, generar comprobante)
+  // Muestra un menú inferior con opciones de acciones finales
   void _showOptionsMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -53,6 +60,7 @@ class _CierrePageState extends State<CierrePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Opción para guardar el reporte
               ListTile(
                 leading: const Icon(Icons.send, color: Colors.blue),
                 title: const Text('Guardar '),
@@ -63,6 +71,7 @@ class _CierrePageState extends State<CierrePage> {
                   );
                 },
               ),
+              // Opción para generar comprobante
               ListTile(
                 leading: const Icon(Icons.receipt, color: Colors.blue),
                 title: const Text('Generar comprobante'),
@@ -78,7 +87,7 @@ class _CierrePageState extends State<CierrePage> {
     );
   }
 
-  // Muestra las opciones para el comprobante
+  // Muestra un submenú con acciones relacionadas al comprobante
   void _showComprobanteOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -125,6 +134,8 @@ class _CierrePageState extends State<CierrePage> {
     );
   }
 
+  // ---------------- INTERFAZ PRINCIPAL ----------------
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,7 +147,7 @@ class _CierrePageState extends State<CierrePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // --------- SECCIÓN FECHA ---------
+                  // ----------- SECCIÓN: FECHA -----------
                   Card(
                     elevation: 2,
                     child: Padding(
@@ -166,7 +177,7 @@ class _CierrePageState extends State<CierrePage> {
 
                   const SizedBox(height: 24),
 
-                  // --------- SECCIÓN RESUMEN ---------
+                  // ----------- SECCIÓN: RESUMEN DIARIO -----------
                   const Text(
                     'Resumen del Día',
                     style: TextStyle(
@@ -180,7 +191,7 @@ class _CierrePageState extends State<CierrePage> {
 
                   const SizedBox(height: 24),
 
-                  // --------- SECCIÓN TOTAL DE CIERRE ---------
+                  // ----------- SECCIÓN: TOTAL DE CIERRE -----------
                   const Text(
                     'Total de Cierre',
                     style: TextStyle(
@@ -194,16 +205,16 @@ class _CierrePageState extends State<CierrePage> {
 
                   const SizedBox(height: 24),
 
-                  // --------- SECCIÓN DOCUMENTOS PENDIENTES ---------
+                  // ----------- SECCIÓN: DOCUMENTOS PENDIENTES -----------
                   _buildDocumentosPendientes(),
 
-                  const SizedBox(height: 72), // Espacio para el FAB
+                  const SizedBox(height: 72), // Espacio inferior para FAB
                 ],
               ),
             ),
           ),
 
-          // --------- BOTÓN DE OPCIONES ---------
+          // ----------- BOTÓN FLOTANTE DE OPCIONES -----------
           Positioned(
             right: 16,
             bottom: 16,
@@ -218,11 +229,9 @@ class _CierrePageState extends State<CierrePage> {
     );
   }
 
-  // ------------------------------
-  // COMPONENTES REUTILIZABLES
-  // ------------------------------
+  // ---------------- COMPONENTES PERSONALIZADOS ----------------
 
-  // Tabla de resumen diario
+  // Tabla de resumen del día
   Widget _buildResumenTable() {
     return Container(
       decoration: BoxDecoration(
@@ -250,7 +259,7 @@ class _CierrePageState extends State<CierrePage> {
     );
   }
 
-  // Card que permite ingresar efectivo y calcula sobrante
+  // Card para ingresar efectivo y calcular el sobrante
   Widget _buildTotalCierre() {
     return Card(
       elevation: 2,
@@ -302,7 +311,7 @@ class _CierrePageState extends State<CierrePage> {
     );
   }
 
-  // Card para mostrar documentos pendientes
+  // Card para mostrar número de documentos pendientes
   Widget _buildDocumentosPendientes() {
     return Card(
       elevation: 2,
@@ -338,7 +347,7 @@ class _CierrePageState extends State<CierrePage> {
     );
   }
 
-  // Fila de la tabla de resumen
+  // Generador de filas para la tabla de resumen
   TableRow _buildTableRow(
     String label,
     String value, {

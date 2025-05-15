@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Pantalla de gestión de rubros (combustibles, aditivos, etc.)
 class GestosPage extends StatefulWidget {
   const GestosPage({super.key});
 
@@ -8,14 +9,18 @@ class GestosPage extends StatefulWidget {
 }
 
 class _RubrosPageState extends State<GestosPage> {
-  // Variables para el formulario
+  // ------------------ VARIABLES ------------------
+
+  // Rubro seleccionado actualmente en el formulario
   String? _rubroSeleccionado;
+
+  // Controladores para los campos de cantidad de dinero y litros
   final TextEditingController _cantidadDineroController =
       TextEditingController();
   final TextEditingController _cantidadLitrosController =
       TextEditingController();
 
-  // Lista de rubros de ejemplo
+  // Lista fija de opciones de rubros
   final List<String> _rubros = [
     'Gasolina Regular',
     'Gasolina Premium',
@@ -26,8 +31,10 @@ class _RubrosPageState extends State<GestosPage> {
     'Lubricantes',
   ];
 
-  // Lista para almacenar los rubros agregados
+  // Lista de rubros agregados dinámicamente por el usuario
   final List<Map<String, dynamic>> _rubrosAgregados = [];
+
+  // ------------------ UI PRINCIPAL ------------------
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +44,14 @@ class _RubrosPageState extends State<GestosPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Formulario para agregar rubros
+            // ----------- FORMULARIO DE INGRESO DE RUBROS -----------
             Card(
               elevation: 4,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    // Selector de Rubro
+                    // Dropdown para seleccionar un rubro
                     DropdownButtonFormField<String>(
                       value: _rubroSeleccionado,
                       decoration: const InputDecoration(
@@ -66,9 +73,10 @@ class _RubrosPageState extends State<GestosPage> {
                       },
                       hint: const Text('Seleccione un rubro'),
                     ),
+
                     const SizedBox(height: 16),
 
-                    // Cantidad en dinero
+                    // Campo de cantidad en dinero
                     TextFormField(
                       controller: _cantidadDineroController,
                       keyboardType: TextInputType.number,
@@ -78,9 +86,10 @@ class _RubrosPageState extends State<GestosPage> {
                         prefixIcon: Icon(Icons.attach_money),
                       ),
                     ),
+
                     const SizedBox(height: 16),
 
-                    // Cantidad en litros
+                    // Campo de cantidad en litros
                     TextFormField(
                       controller: _cantidadLitrosController,
                       keyboardType: TextInputType.number,
@@ -90,9 +99,10 @@ class _RubrosPageState extends State<GestosPage> {
                         prefixIcon: Icon(Icons.water_drop),
                       ),
                     ),
+
                     const SizedBox(height: 16),
 
-                    // Botones de acción
+                    // Botones para agregar y eliminar
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -120,9 +130,10 @@ class _RubrosPageState extends State<GestosPage> {
                 ),
               ),
             ),
+
             const SizedBox(height: 16),
 
-            // Lista de rubros agregados
+            // ----------- LISTA DE RUBROS AGREGADOS -----------
             Expanded(
               child: Card(
                 elevation: 4,
@@ -159,9 +170,10 @@ class _RubrosPageState extends State<GestosPage> {
                 ),
               ),
             ),
+
             const SizedBox(height: 16),
 
-            // Botones inferiores
+            // ----------- BOTONES INFERIORES -----------
             Row(
               children: [
                 Expanded(
@@ -195,6 +207,9 @@ class _RubrosPageState extends State<GestosPage> {
     );
   }
 
+  // ------------------ FUNCIONES DE LÓGICA ------------------
+
+  // Agrega el rubro a la lista si todos los campos están completos
   void _agregarRubro() {
     if (_rubroSeleccionado == null ||
         _cantidadDineroController.text.isEmpty ||
@@ -215,13 +230,14 @@ class _RubrosPageState extends State<GestosPage> {
         'litros': _cantidadLitrosController.text,
       });
 
-      // Limpiar los campos después de agregar
+      // Limpiar campos después de agregar
       _cantidadDineroController.clear();
       _cantidadLitrosController.clear();
       _rubroSeleccionado = null;
     });
   }
 
+  // Elimina el último rubro de la lista
   void _eliminarUltimo() {
     if (_rubrosAgregados.isEmpty) return;
 
@@ -230,12 +246,14 @@ class _RubrosPageState extends State<GestosPage> {
     });
   }
 
+  // Elimina un rubro específico de la lista
   void _eliminarRubro(int index) {
     setState(() {
       _rubrosAgregados.removeAt(index);
     });
   }
 
+  // Simula el envío de datos
   void _enviarDatos() {
     if (_rubrosAgregados.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -247,7 +265,7 @@ class _RubrosPageState extends State<GestosPage> {
       return;
     }
 
-    // Aquí iría la lógica para enviar los datos
+    // Aquí podría ir una petición HTTP, etc.
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Enviando ${_rubrosAgregados.length} rubros...'),
@@ -256,8 +274,8 @@ class _RubrosPageState extends State<GestosPage> {
     );
   }
 
+  // Simula descarga de los rubros (PDF, Excel, etc.)
   void _descargarRubros() {
-    // Aquí iría la lógica para descargar rubros
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Descargando lista de rubros...'),
@@ -266,6 +284,7 @@ class _RubrosPageState extends State<GestosPage> {
     );
   }
 
+  // Liberar controladores al destruir la pantalla
   @override
   void dispose() {
     _cantidadDineroController.dispose();
