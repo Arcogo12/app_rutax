@@ -152,7 +152,14 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 // Ícono representativo
                 const SizedBox(height: 20),
-
+                Image.asset(
+                  'lib/images/logo.png',
+                  height: 120,
+                  color: Colors.white, // <- Aplica un color encima
+                  colorBlendMode:
+                      BlendMode
+                          .srcIn, // <- Mezcla el color con la transparencia
+                ),
                 // Título de la app
                 const Text(
                   '',
