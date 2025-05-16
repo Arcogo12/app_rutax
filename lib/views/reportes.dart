@@ -71,9 +71,8 @@ class _ReportesPageState extends State<ReportesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reportes'),
+        automaticallyImplyLeading: false,
         actions: [
-          // Botón de calendario en la AppBar
           IconButton(
             icon: const Icon(Icons.calendar_today),
             tooltip: 'Seleccionar fecha',
@@ -81,6 +80,7 @@ class _ReportesPageState extends State<ReportesPage> {
           ),
         ],
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

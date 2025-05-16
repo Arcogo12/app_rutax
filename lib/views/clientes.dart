@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_rutax/views/venta_de_contacto.dart';
+import 'package:app_rutax/views/no_venta.dart';
 
 /// Página principal de clientes
 class ClientesPage extends StatefulWidget {
@@ -166,9 +167,15 @@ class _ClientesPageState extends State<ClientesPage> {
                       },
                     ),
                     _buildOpcion(Icons.block, 'No venta', () {
-                      Navigator.pop(context);
-                      _showOption('No venta');
+                      Navigator.pop(
+                        context,
+                      ); // Cierra el drawer o modal si es necesario
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => NoVentaPage()),
+                      );
                     }),
+
                     _buildOpcion(Icons.alt_route, 'Ruta desde aquí', () {
                       Navigator.pop(context);
                       _showOption('Ruta desde aquí');
