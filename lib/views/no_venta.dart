@@ -33,10 +33,12 @@ class _NoVentaPageState extends State<NoVentaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro de No Venta'),
+        title: const Text('No Venta'),
+        centerTitle: true,
         backgroundColor: Colors.orange,
         foregroundColor: Colors.white,
-      ), // <- AQUÍ estaba el error
+      ),
+      // <- AQUÍ estaba el error
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -192,7 +194,7 @@ class _NoVentaPageState extends State<NoVentaPage> {
                   );
                 },
                 child: const Text(
-                  'REGISTRAR NO VENTA',
+                  'Enviar',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),

@@ -271,7 +271,7 @@ class _VentaDeContactoPageState extends State<VentaDeContactoPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildInfoRow('Movimiento', producto['tipoMovimiento']),
+                _buildInfoRow('Movi', producto['tipoMovimiento']),
                 _buildInfoRow('Clave', producto['clave']),
                 _buildInfoRow('Cantidad', producto['cantidad']),
                 _buildInfoRow(
@@ -422,10 +422,13 @@ class _VentaDeContactoPageState extends State<VentaDeContactoPage> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    ElevatedButton.icon(
+                    ElevatedButton(
                       onPressed: _agregarProducto,
-                      icon: const Icon(Icons.add),
-                      label: const Text('Agregar'),
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(12),
+                      ),
+                      child: const Icon(Icons.add),
                     ),
                   ],
                 ),

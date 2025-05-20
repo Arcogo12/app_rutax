@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class CierrePage extends StatefulWidget {
   const CierrePage({super.key});
@@ -9,26 +10,19 @@ class CierrePage extends StatefulWidget {
 }
 
 class _CierrePageState extends State<CierrePage> {
-  // Controlador para el campo de texto de total en efectivo
   final TextEditingController _totalEfectivoController =
       TextEditingController();
 
-  // Variable para guardar el cálculo del sobrante (efectivo - esperado)
   double _sobrante = 0.0;
-
-  // Fecha seleccionada por el usuario
   DateTime _selectedDate = DateTime.now();
 
-  // ---------------- FUNCIONES PRINCIPALES ----------------
-
-  // Muestra un selector de fecha al usuario
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
-      locale: const Locale('es', 'ES'), // Idioma en español
+      locale: const Locale('es', 'ES'),
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
@@ -37,57 +31,17 @@ class _CierrePageState extends State<CierrePage> {
     }
   }
 
-  // Devuelve la fecha seleccionada en formato legible
   String get formattedDate {
     return DateFormat('EEEE dd/MM/yyyy', 'es').format(_selectedDate);
   }
 
-  // Calcula el sobrante tomando en cuenta el monto ingresado por el usuario
   void _calcularSobrante() {
     final efectivo = double.tryParse(_totalEfectivoController.text) ?? 0;
     setState(() {
-      _sobrante = efectivo - 1000; // 1000 es el monto base esperado
+      _sobrante = efectivo - 1000;
     });
   }
 
-  // Muestra un menú inferior con opciones de acciones finales
-  void _showOptionsMenu(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Opción para guardar el reporte
-              ListTile(
-                leading: const Icon(Icons.send, color: Colors.blue),
-                title: const Text('Guardar '),
-                onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Reporte enviado')),
-                  );
-                },
-              ),
-              // Opción para generar comprobante
-              ListTile(
-                leading: const Icon(Icons.receipt, color: Colors.blue),
-                title: const Text('Generar comprobante'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _showComprobanteOptions(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  // Muestra un submenú con acciones relacionadas al comprobante
   void _showComprobanteOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -134,104 +88,110 @@ class _CierrePageState extends State<CierrePage> {
     );
   }
 
-  // ---------------- INTERFAZ PRINCIPAL ----------------
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // ----------- SECCIÓN: FECHA -----------
-                  Card(
-                    elevation: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => _selectDate(context),
-                            child: const Icon(
-                              Icons.calendar_today,
-                              size: 30,
-                              color: Colors.blue,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            formattedDate,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => _selectDate(context),
+                        child: const Icon(
+                          Icons.calendar_today,
+                          size: 30,
+                          color: Colors.blue,
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 12),
+                      Text(
+                        formattedDate,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-
-                  const SizedBox(height: 24),
-
-                  // ----------- SECCIÓN: RESUMEN DIARIO -----------
-                  const Text(
-                    'Resumen del Día',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  _buildResumenTable(),
-
-                  const SizedBox(height: 24),
-
-                  // ----------- SECCIÓN: TOTAL DE CIERRE -----------
-                  const Text(
-                    'Total de Cierre',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  _buildTotalCierre(),
-
-                  const SizedBox(height: 24),
-
-                  // ----------- SECCIÓN: DOCUMENTOS PENDIENTES -----------
-                  _buildDocumentosPendientes(),
-
-                  const SizedBox(height: 72), // Espacio inferior para FAB
-                ],
+                ),
               ),
-            ),
-          ),
 
-          // ----------- BOTÓN FLOTANTE DE OPCIONES -----------
-          Positioned(
-            right: 16,
-            bottom: 16,
-            child: FloatingActionButton(
-              onPressed: () => _showOptionsMenu(context),
-              tooltip: 'Opciones',
-              child: const Icon(Icons.more_vert, size: 28),
-            ),
+              const SizedBox(height: 24),
+
+              const Text(
+                'Resumen del Día',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueGrey,
+                ),
+              ),
+              const SizedBox(height: 8),
+              _buildResumenTable(),
+
+              const SizedBox(height: 24),
+
+              const Text(
+                'Total de Cierre',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueGrey,
+                ),
+              ),
+              const SizedBox(height: 8),
+              _buildTotalCierre(),
+
+              const SizedBox(height: 24),
+
+              _buildDocumentosPendientes(),
+
+              const SizedBox(height: 72),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        backgroundColor: Colors.blue,
+        overlayColor: Colors.black,
+        overlayOpacity: 0.5,
+        spacing: 12,
+        tooltip: 'Opciones',
+        children: [
+          SpeedDialChild(
+            child: const Icon(Icons.send, color: Colors.white),
+            backgroundColor: Colors.green,
+            label: 'Guardar',
+            labelStyle: const TextStyle(fontSize: 16),
+            onTap: () {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Reporte enviado')));
+            },
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.receipt, color: Colors.white),
+            backgroundColor: Colors.orange,
+            label: 'Generar comprobante',
+            labelStyle: const TextStyle(fontSize: 16),
+            onTap: () {
+              _showComprobanteOptions(context);
+            },
           ),
         ],
       ),
     );
   }
 
-  // ---------------- COMPONENTES PERSONALIZADOS ----------------
-
-  // Tabla de resumen del día
   Widget _buildResumenTable() {
     return Container(
       decoration: BoxDecoration(
@@ -259,7 +219,6 @@ class _CierrePageState extends State<CierrePage> {
     );
   }
 
-  // Card para ingresar efectivo y calcular el sobrante
   Widget _buildTotalCierre() {
     return Card(
       elevation: 2,
@@ -311,7 +270,6 @@ class _CierrePageState extends State<CierrePage> {
     );
   }
 
-  // Card para mostrar número de documentos pendientes
   Widget _buildDocumentosPendientes() {
     return Card(
       elevation: 2,
@@ -347,7 +305,6 @@ class _CierrePageState extends State<CierrePage> {
     );
   }
 
-  // Generador de filas para la tabla de resumen
   TableRow _buildTableRow(
     String label,
     String value, {

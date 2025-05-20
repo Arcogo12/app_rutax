@@ -89,40 +89,30 @@ class _RubrosPageState extends State<GestosPage> {
 
                     const SizedBox(height: 16),
 
-                    // Campo de cantidad en litros
-                    TextFormField(
-                      controller: _cantidadLitrosController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Cantidad (Litros)',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.water_drop),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
                     // Botones para agregar y eliminar
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ElevatedButton.icon(
+                        ElevatedButton(
                           onPressed: _agregarRubro,
-                          icon: const Icon(Icons.add),
-                          label: const Text('Agregar'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(12),
                           ),
+                          child: const Icon(Icons.add),
                         ),
-                        ElevatedButton.icon(
+
+                        ElevatedButton(
                           onPressed: _eliminarUltimo,
-                          icon: const Icon(Icons.delete),
-                          label: const Text('Eliminar'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white,
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(12),
                           ),
+                          child: const Icon(Icons.delete),
                         ),
                       ],
                     ),
@@ -179,7 +169,6 @@ class _RubrosPageState extends State<GestosPage> {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: _enviarDatos,
-                    icon: const Icon(Icons.send),
                     label: const Text('Enviar'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -190,7 +179,6 @@ class _RubrosPageState extends State<GestosPage> {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: _descargarRubros,
-                    icon: const Icon(Icons.download),
                     label: const Text('Descargar Rubros'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
