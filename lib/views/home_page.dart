@@ -6,6 +6,8 @@ import 'package:app_rutax/views/reportes.dart';
 import 'package:app_rutax/views/cierre_del_dia.dart';
 import 'package:app_rutax/views/gestos_operativos.dart';
 import 'package:app_rutax/views/sincronizar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 // Página principal que sirve de base para cambiar entre vistas con un menú lateral
 class HomePage extends StatefulWidget {
@@ -117,14 +119,30 @@ class _HomePageState extends State<HomePage> {
 
             // Opción para cerrar sesión (navega hacia atrás dos veces)
             const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Cerrar sesión'),
-              onTap: () {
-                Navigator.pop(context); // Cierra Drawer
-                Navigator.pop(context); // Regresa al Login
-              },
-            ),
+        ListTile(
+  leading: const Icon(Icons.logout),
+  title: const Text('Cerrar sesión'),
+  onTap: () async {
+    // Cierra el drawer primero
+    Navigator.pop(context);
+    
+    // Limpiar credenciales si no quiere ser recordado
+    final prefs = await SharedPreferences.getInstance();
+    final isRemembered = prefs.getBool('isRemembered') ?? false;
+    
+    if (!isRemembered) {
+      await prefs.remove('rememberedUser');
+      await prefs.remove('rememberedPassword');
+    }
+    
+    // Navegar al login limpiando todo el stack
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+      (Route<dynamic> route) => false,
+    );
+  },
+),
           ],
         ),
       ),
