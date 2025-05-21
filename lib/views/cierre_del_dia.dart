@@ -161,7 +161,7 @@ class _CierrePageState extends State<CierrePage> {
       ),
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.orange,
         overlayColor: Colors.black,
         overlayOpacity: 0.5,
         spacing: 12,
@@ -180,7 +180,7 @@ class _CierrePageState extends State<CierrePage> {
           ),
           SpeedDialChild(
             child: const Icon(Icons.receipt, color: Colors.white),
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.blue,
             label: 'Generar comprobante',
             labelStyle: const TextStyle(fontSize: 16),
             onTap: () {
@@ -244,7 +244,7 @@ class _CierrePageState extends State<CierrePage> {
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
-                    onChanged: (value) => _calcularSobrante(),
+                    onChanged: (vmalue) => _calcularSobrante(),
                   ),
                 ),
               ],
